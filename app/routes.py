@@ -28,7 +28,15 @@ def generate_email():
     }
     
     Returns:
-        JSON response with generated email or error message
+        JSON response with structured email data:
+        {
+            "subject": str,
+            "body": str,
+            "summary": str,
+            "contactName": str,
+            "companyName": str,
+            "tone": str
+        }
     """
     try:
         logger.info("Received email generation request")
@@ -44,14 +52,12 @@ def generate_email():
 
         # Generate email content
         logger.info(f"Generating email for {data['contactName']} from {data['companyName']}")
-        generated_email = generate_email_content(data)
+        email_response = generate_email_content(data)
         
         logger.info("Successfully generated email")
-        logger.debug(f"Generated email length: {len(generated_email)}")
+        logger.debug(f"Generated email - Subject: {email_response['subject']}, Body length: {len(email_response['body'])}")
         
-        return jsonify({
-            'email': generated_email
-        })
+        return jsonify(email_response)
 
     except Exception as e:
         logger.error(f"Error generating email: {str(e)}", exc_info=True)
